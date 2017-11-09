@@ -4,24 +4,29 @@ import matplotlib.pyplot as plt
 from skimage.io import imread, imshow, show
 import io
 
-# data = bson.decode_file_iter(open('/media/michael/Seagate Backup Plus Drive/data/train.bson', 'rb'))
-data = bson.decode_file_iter(open('train_example.bson', 'rb'))
-cnt = 0
+class DataReader(object):
+  def __init__(self, filename):
+    super(DataReader, self).__init__()
+    self.data = bson.decode_file_iter(open(filename, 'rb'))
 
-for c, d in enumerate(data):
-  # print d['_id'], d['category_id']
-  cnt += 1
-  for e, pic in enumerate(d['imgs']):
-    picture = imread(io.BytesIO(pic['picture']))
-    imshow(picture)
-    show()
-    # do something with the picture, etc
-  print cnt
+  def getOne(self):
+    doc = self.data.next()
+    image_lst = []
+    for e, pic in enumerate(doc['imgs']):
+      image_lst.append(imread(io.BytesIO(pic['picture'])))
+    return (int(doc['category_id']), image_lst)
 
-print cnt
+def main(argv):
+  rdr = DataReader(argv[1])
+  while 1:
+    try:
+      tup = rdr.getOne()
+      for img in tup[1]:
+        imshow(img)
+        show()
+      print 
+    except StopIteration:
+      break
 
-# def main(argv):
-
-
-# if __name__ == '__main__':
-#   main(sys.argv)
+if __name__ == '__main__':
+  main(sys.argv)
