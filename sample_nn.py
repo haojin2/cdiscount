@@ -7,12 +7,14 @@ from keras.optimizers import SGD
 from skimage.color import rgb2gray
 import numpy as np
 import sys
+import urllib
 #https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
-folder_path = ""
+folder_path = "http://paaaandayuan.s3.amazonaws.com/707/"
 
 def main(argv):
-  with open(folder_path + argv[1], 'r') as data_file:
-    all_data = pickle.load(data_file)
+  data_file = urllib.URLopener().open(folder_path + argv[1])
+  # with open(folder_path + argv[1], 'r') as data_file:
+  all_data = pickle.load(data_file)
   with open('catid_to_levelid.json', 'r') as dict_file:
     l_dict = json.load(dict_file)
   print len(all_data)
