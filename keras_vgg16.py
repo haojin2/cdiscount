@@ -145,7 +145,6 @@ def main(argv):
   test_y_l2 = np.asarray(test_y_l2)
   test_y_l3 = np.asarray(test_y_l3)
   print "all data and label ready"
-  sys.exit(0)
 
   model1 = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l1_size)
   model2 = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l2_size)

@@ -126,66 +126,68 @@ def main(argv):
   x = Dense(4096, activation='relu', name='fc2')(x)
   predictions = Dense(l3_size, activation='softmax')(x)
   model = Model(inputs=input_layer, outputs=predictions)
-  for layer in base_model.layers:
-    layer.trainable = False
-  model.compile(optimizer='rmsprop', loss='categorical_crossentropy')
-  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
+  plot_model(model, to_file='model.png')
+  # for layer in base_model.layers:
+  #   layer.trainable = False
+  model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+  train_x = np.reshape(train_x[:, :, :], (num_train, 224,224, 3))
+  model.fit(train_x, train_y_l3[:, :], epochs=5, verbose=1, batch_size = 100, validation_split=0.15)
   
-  for i, layer in enumerate(model.layers):
-    print(i, layer.name)
+  # for i, layer in enumerate(model.layers):
+  #   print(i, layer.name)
 
-  for layer in model.layers[:15]:
-    layer.trainable = False
-  for layer in model.layers[15:19]:
-    layer.trainable = True
-  for layer in model.layers[19:]:
-    layer.trainable = False
+  # for layer in model.layers[:15]:
+  #   layer.trainable = False
+  # for layer in model.layers[15:19]:
+  #   layer.trainable = True
+  # for layer in model.layers[19:]:
+  #   layer.trainable = False
 
-  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
-  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
-
-
-  for layer in model.layers[:11]:
-    layer.trainable = False
-  for layer in model.layers[11:15]:
-    layer.trainable = True
-  for layer in model.layers[15:]:
-    layer.trainable = False
-
-  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
-  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
+  # model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+  # model.fit(train_x, train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
 
 
-  for layer in model.layers[:7]:
-    layer.trainable = False
-  for layer in model.layers[7:11]:
-    layer.trainable = True
-  for layer in model.layers[11:]:
-    layer.trainable = False
+  # for layer in model.layers[:11]:
+  #   layer.trainable = False
+  # for layer in model.layers[11:15]:
+  #   layer.trainable = True
+  # for layer in model.layers[15:]:
+  #   layer.trainable = False
 
-  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
-  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
+  # model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+  # model.fit(train_x, train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
 
 
-  for layer in model.layers[:4]:
-    layer.trainable = False
-  for layer in model.layers[4:7]:
-    layer.trainable = True
-  for layer in model.layers[7:]:
-    layer.trainable = False
+  # for layer in model.layers[:7]:
+  #   layer.trainable = False
+  # for layer in model.layers[7:11]:
+  #   layer.trainable = True
+  # for layer in model.layers[11:]:
+  #   layer.trainable = False
 
-  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
-  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
+  # model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+  # model.fit(train_x, train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
 
-  for layer in model.layers[:1]:
-    layer.trainable = False
-  for layer in model.layers[1:4]:
-    layer.trainable = True
-  for layer in model.layers[4:]:
-    layer.trainable = False
 
-  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy')
-  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
+  # for layer in model.layers[:4]:
+  #   layer.trainable = False
+  # for layer in model.layers[4:7]:
+  #   layer.trainable = True
+  # for layer in model.layers[7:]:
+  #   layer.trainable = False
+
+  # model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+  # model.fit(train_x, train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
+
+  # for layer in model.layers[:1]:
+  #   layer.trainable = False
+  # for layer in model.layers[1:4]:
+  #   layer.trainable = True
+  # for layer in model.layers[4:]:
+  #   layer.trainable = False
+
+  # model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
+  # model.fit(train_x, train_y_l3[:, :], epochs=3, verbose=1, batch_size = 100, validation_split=0.15)
 
   model.save('pretrained_model.h5')
     
