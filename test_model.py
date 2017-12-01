@@ -71,7 +71,7 @@ def main(argv):
   test_y_l3 = []
   item_image_mapping = np.empty([num_test, 2], dtype = int)
   start = 0
-  
+
   for i in range(num_test):
     num_img = len(test_data[i])
     item_image_mapping[i, 0] = start
@@ -107,6 +107,7 @@ def main(argv):
     avg_probs = np.average(probs)
     ce_error += -np.log(avg_probs) /num_test
 
+    #majority vote
     counts = np.bincount(res)
     label = np.argmax(counts)
     if np.max(counts) == 1:
@@ -115,6 +116,12 @@ def main(argv):
 
   print 'classification accuracy is ', cl_acc
   print 'cross entropy error is ', ce_error
+
+  # TODO:
+  # From l3 label use 'l3_to_l1.json' get l1 labels, 
+  # feed into 3 separate l1-l3 models. 
+  # get their respective l3 labels. 
+  # get classification accuracy
 
     
 if __name__ == '__main__':
