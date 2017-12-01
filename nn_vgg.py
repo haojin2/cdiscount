@@ -10,12 +10,11 @@ import numpy as np
 import sys
 import urllib
 #https://gist.github.com/baraldilorenzo/07d7802847aaad0a35d3
- folder_path = "http://paaaandayuan.s3.amazonaws.com/707/"
+# folder_path = "http://paaaandayuan.s3.amazonaws.com/707/"
 #folder_path = "/Volumes/APPLE-RED/707/"
 def main(argv):
-  data_file = urllib.URLopener().open(folder_path + argv[1])
-  # with open(folder_path + argv[1], 'r') as data_file:
-  all_data = pickle.load(data_file)
+  with open(argv[1], 'r') as data_file:
+    all_data = pickle.load(data_file)
   with open('catid_to_levelid.json', 'r') as dict_file:
     l_dict = json.load(dict_file)
   print len(all_data)
@@ -28,11 +27,9 @@ def main(argv):
     label[l_dict[str(all_data[i][0])][0]] = 1.
     y.append(label)
   image_shape = x[0].shape
-  print image_shape
   x = np.asarray(x)
   y = np.asarray(y)
-  print x.shape
-  print y.shape
+ 
   #np.savetxt("x.csv", x, delimiter=",")
   #np.savetxt("y.csv", y, delimiter=",")
   model = Sequential()
