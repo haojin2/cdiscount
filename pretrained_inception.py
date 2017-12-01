@@ -5,7 +5,7 @@ from keras import backend as K
 from keras.optimizers import SGD
 from keras.applications.vgg16 import VGG16
 from keras.applications.vgg16 import preprocess_input
-import cpickle as pickle
+import cPickle as pickle
 import json
 import keras
 import numpy as np
@@ -16,6 +16,7 @@ from skimage.transform import resize
 from keras.layers import Conv2D, MaxPooling2D, Dense, Dropout, Flatten
 import sys
 import urllib
+import getopt
 
 def usage():
   print "usage: python2 keras_vgg16.py -r <train_file> -t <test_file>"
