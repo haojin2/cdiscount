@@ -109,29 +109,29 @@ def main(argv):
   print "train data and label ready"
   image_shape = train_x[0].shape
 
-  test_x = []
-  test_y_l1 = []
-  test_y_l2 = []
-  test_y_l3 = []
-  for i in range(num_test):
-    label_tup = l_dict[str(test_data[i][0])]
-    l1_label = np.zeros((l1_size,), dtype=float)
-    true_l1_label = label_tup[0]
-    l1_label[l1_dict[true_l1_label]] = 1.
+  # test_x = []
+  # test_y_l1 = []
+  # test_y_l2 = []
+  # test_y_l3 = []
+  # for i in range(num_test):
+  #   label_tup = l_dict[str(test_data[i][0])]
+  #   l1_label = np.zeros((l1_size,), dtype=float)
+  #   true_l1_label = label_tup[0]
+  #   l1_label[l1_dict[true_l1_label]] = 1.
 
-    l2_label = np.zeros((l2_size,), dtype=float)
-    true_l2_label = label_tup[1]
-    l2_label[l2_dict[true_l2_label]] = 1.
+  #   l2_label = np.zeros((l2_size,), dtype=float)
+  #   true_l2_label = label_tup[1]
+  #   l2_label[l2_dict[true_l2_label]] = 1.
 
-    l3_label = np.zeros((l3_size,), dtype=float)
-    true_l3_label = label_tup[2]
-    l3_label[l3_dict[true_l3_label]] = 1.
+  #   l3_label = np.zeros((l3_size,), dtype=float)
+  #   true_l3_label = label_tup[2]
+  #   l3_label[l3_dict[true_l3_label]] = 1.
 
-    for img in test_data[i][1]:
-      test_x.append(resize(img, (224, 224, 3), mode='edge'))
-      test_y_l1.append(l1_label)
-      test_y_l2.append(l2_label)
-      test_y_l3.append(l3_label)
+  #   for img in test_data[i][1]:
+  #     test_x.append(resize(img, (224, 224, 3), mode='edge'))
+  #     test_y_l1.append(l1_label)
+  #     test_y_l2.append(l2_label)
+  #     test_y_l3.append(l3_label)
 
   num_train = len(train_x)
   train_x = np.asarray(train_x)
@@ -139,11 +139,11 @@ def main(argv):
   train_y_l2 = np.asarray(train_y_l2)
   train_y_l3 = np.asarray(train_y_l3)
 
-  num_test = len(test_x)
-  test_x = np.asarray(test_x)
-  test_y_l1 = np.asarray(test_y_l1)
-  test_y_l2 = np.asarray(test_y_l2)
-  test_y_l3 = np.asarray(test_y_l3)
+  # num_test = len(test_x)
+  # test_x = np.asarray(test_x)
+  # test_y_l1 = np.asarray(test_y_l1)
+  # test_y_l2 = np.asarray(test_y_l2)
+  # test_y_l3 = np.asarray(test_y_l3)
   print "all data and label ready"
 
   model1 = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l1_size)
