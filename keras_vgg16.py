@@ -50,7 +50,7 @@ def parseArgs(argv):
 
 def main(argv):
   train_file, test_file = parseArgs(argv)
-  target_l1s = set([5, 13, 18, 19, 23, 28, 31, 32, 46, 48])
+  target_l1s = set([15, 18, 31, 42, 48])
 
   l1_dict = levelMapping(target_l1s, 1)
   l1_size = len(l1_dict)
@@ -100,12 +100,12 @@ def main(argv):
     true_l3_label = label_tup[2]
     l3_label[l3_dict[true_l3_label]] = 1.
 
-    for img in train_data[i][1]:
-      train_x.append(resize(img, (224, 224, 3), mode='edge'))
-      train_y_l1.append(l1_label)
-      train_y_l2.append(l2_label)
-      train_y_l3.append(l3_label)
+    train_x.append(resize(train_data[i][1][0], (224, 224, 3), mode='edge'))
+    train_y_l1.append(l1_label)
+    train_y_l2.append(l2_label)
+    train_y_l3.append(l3_label)
 
+  print "train data and label ready"
   image_shape = train_x[0].shape
 
   test_x = []
@@ -126,11 +126,10 @@ def main(argv):
     true_l3_label = label_tup[2]
     l3_label[l3_dict[true_l3_label]] = 1.
 
-    for img in test_data[i][1]:
-      test_x.append(resize(img, (224, 224, 3), mode='edge'))
-      test_y_l1.append(l1_label)
-      test_y_l2.append(l2_label)
-      test_y_l3.append(l3_label)
+    test_x.append(resize(test_data[i][1][0], (224, 224, 3), mode='edge'))
+    test_y_l1.append(l1_label)
+    test_y_l2.append(l2_label)
+    test_y_l3.append(l3_label)
 
   train_x = np.asarray(train_x)
   train_y_l1 = np.asarray(train_y_l1)
