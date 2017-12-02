@@ -145,25 +145,23 @@ def main(argv):
   # test_y_l2 = np.asarray(test_y_l2)
   # test_y_l3 = np.asarray(test_y_l3)
   print "all data and label ready"
-
-  model1 = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l1_size)
-  model2 = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l2_size)
-  model3 = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l3_size)
-
   sgd = SGD(lr=0.0001, decay=1e-6, momentum=0.5, nesterov=True)
 
-  model1.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-  model1.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l1[:, :], validation_split=0.15, epochs=200, verbose=2, batch_size = 100)
 
-  model2.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-  model2.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l2[:, :], validation_split=0.15, epochs=200, verbose=2, batch_size = 100)
+  model = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l1_size)
+  model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l1[:, :], validation_split=0.15, epochs=10, verbose=1, batch_size = 100)
+  model.save('l1_model.h5')
 
-  model3.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-  model3.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], validation_split=0.15, epochs=200, verbose=2, batch_size = 100)
+  model = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l2_size)
+  model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l2[:, :], validation_split=0.15, epochs=10, verbose=1, batch_size = 100)
+  model.save('l2_model.h5')
 
-  model1.save('l1_model.h5')
-  model2.save('l2_model.h5')
-  model3.save('l3_model.h5')
+  model = VGG16(include_top=True, weights=None, input_tensor=None, input_shape=(224, 224, 3), pooling=None, classes=l3_size)
+  model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+  model.fit(np.reshape(train_x[:, :, :], (num_train, 224,224, 3)), train_y_l3[:, :], validation_split=0.15, epochs=10, verbose=1, batch_size = 100)
+  model.save('l3_model.h5')
 
 
 if __name__ == '__main__':
