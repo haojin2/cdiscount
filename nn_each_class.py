@@ -65,24 +65,32 @@ def main(argv):
   with open('catid_to_levelid.json', 'r') as dict_file:
     l_dict = json.load(dict_file)
 
-  num_train = len(train_data)
+  num_train_original = len(train_data)
 
-  train_x = []
-  train_y_l3 = []
-  for i in range(num_train):
+  num_train = 0
+  for i in range(num_train_original):
+    label_tup = l_dict[str(train_data[i][0])]
+    if label_tup[0] == target:
+      num_train += len(train_data[i][1])
+
+  train_x = np.empty([num_train, 224, 224, 3])
+  train_y_l3 = np.empty([num_train, l3_size])
+  image_pos = 0
+  for i in range(num_train_original):
     label_tup = l_dict[str(train_data[i][0])]
     l3_label = np.zeros((l3_size,), dtype=float)
-    true_l3_label = label_tup[2]
-    l3_label[l3_dict[true_l3_label]] = 1.
+    if label_tup[0] == target:
+      true_l3_label = label_tup[2]
+      l3_label[l3_dict[true_l3_label]] = 1.
 
-    for img in train_data[i][1]:
-      train_x.append(resize(img, (224, 224, 3), mode='edge'))
-      train_y_l3.append(l3_label)
+      for img in train_data[i][1]:
+        train_x[image_pos，:, :, :] = resize(img, (224, 224, 3), mode='edge')
+        train_y_l3[image_pos, :] = l3_label
+        image_pos += 1
 
   print "train data and label ready"
   image_shape = train_x[0].shape
 
-  num_train = len(train_x)
   train_x = np.asarray(train_x)
   train_y_l3 = np.asarray(train_y_l3)
 
@@ -97,9 +105,7 @@ def main(argv):
   predictions = Dense(l3_size, activation='softmax')(x)
   model = Model(inputs=input_layer, outputs=predictions)
 
-  for i, layer in enumerate(model.layers[1].layers):
-    print(i, layer.name)
-  model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
   train_x = np.reshape(train_x[:, :, :], (num_train, 224,224, 3))
   model.fit(train_x, train_y_l3[:, :], epochs=100, verbose=1, batch_size = 100, validation_split=0.15)
 
