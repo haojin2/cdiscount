@@ -12,7 +12,7 @@ from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D, Dense, Dropout, Fl
 from keras.applications.vgg16 import VGG16
 
 def usage():
-  print "usage: python2 keras_vgg16.py -r <train_file> -n class_num"
+  print "usage: python2 keras_vgg16.py -r <train_file> -n class_num (0/1/2/3/4)"
 
 
 def levelMapping(target_l1s, target_level):
