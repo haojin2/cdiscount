@@ -14,6 +14,7 @@ from keras.optimizers import SGD
 from skimage.color import rgb2gray
 from skimage.transform import resize
 from keras.layers import Input, Conv2D, MaxPooling2D, Dense, Dropout, Flatten
+from keras.utils import plot_model
 import sys
 import urllib
 import getopt
@@ -129,7 +130,7 @@ def main(argv):
   plot_model(model, to_file='model.png')
   # for layer in base_model.layers:
   #   layer.trainable = False
-  model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+  model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
   train_x = np.reshape(train_x[:, :, :], (num_train, 224,224, 3))
   model.fit(train_x, train_y_l3[:, :], epochs=5, verbose=1, batch_size = 100, validation_split=0.15)
   
