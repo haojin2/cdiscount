@@ -4,11 +4,11 @@ import cPickle as pickle
 import json
 import numpy as np
 import getopt
-from keras.models import Sequential
+from keras.models import Sequential, Model
 from keras.optimizers import SGD
 from skimage.color import rgb2gray
 from skimage.transform import resize
-from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D, Dense, Dropout, Flatten
+from keras.layers import Conv2D, MaxPooling2D, ZeroPadding2D, Input, Dense, Dropout, Flatten
 from keras.applications.vgg16 import VGG16
 
 def usage():
@@ -51,8 +51,10 @@ def parseArgs(argv):
 def main(argv):
   train_file, class_num = parseArgs(argv)
   target_l1s = np.array([15, 18, 31, 42, 48])
-  target = target_l1s[class_num]
+  target = target_l1s[int(class_num)]
+  # map actual l3 class label to integer from 0 - l3_size
   l3_dict = levelMapping(target, 3)
+  # number of distinct l3 classes
   l3_size = len(l3_dict)
   l3_reverse_mapping = [0 for i in range(l3_size)]
   for key in l3_dict:
@@ -60,18 +62,19 @@ def main(argv):
 
   with open(train_file, 'r') as train_data_file:
     train_data = pickle.load(train_data_file)
-  print "load data done"
+  print "pickle load data done"
 
   with open('catid_to_levelid.json', 'r') as dict_file:
     l_dict = json.load(dict_file)
 
   num_train_original = len(train_data)
-
   num_train = 0
+
   for i in range(num_train_original):
     label_tup = l_dict[str(train_data[i][0])]
     if label_tup[0] == target:
       num_train += len(train_data[i][1])
+  print "number of training items is", num_train
 
   train_x = np.empty([num_train, 224, 224, 3])
   train_y_l3 = np.empty([num_train, l3_size])
@@ -84,17 +87,14 @@ def main(argv):
       l3_label[l3_dict[true_l3_label]] = 1.
 
       for img in train_data[i][1]:
-        train_x[image_pos，:, :, :] = resize(img, (224, 224, 3), mode='edge')
+        train_x[image_pos, :, :, :] = resize(img, (224, 224, 3), mode='edge')
         train_y_l3[image_pos, :] = l3_label
         image_pos += 1
 
-  print "train data and label ready"
-  image_shape = train_x[0].shape
-
   train_x = np.asarray(train_x)
   train_y_l3 = np.asarray(train_y_l3)
+  print "number of training images is", image_pos
 
-  print "all data and label ready"
 
   input_layer = Input(shape=(224, 224, 3))
   base_model = VGG16(weights='imagenet', include_top=False)
@@ -106,8 +106,8 @@ def main(argv):
   model = Model(inputs=input_layer, outputs=predictions)
 
   model.compile(optimizer=SGD(lr=0.0001, momentum=0.9), loss='categorical_crossentropy', metrics=['accuracy'])
-  train_x = np.reshape(train_x[:, :, :], (num_train, 224,224, 3))
-  model.fit(train_x, train_y_l3[:, :], epochs=100, verbose=1, batch_size = 100, validation_split=0.15)
+  # train_x = np.reshape(train_x[:, :, :], (num_train, 224,224, 3))
+  model.fit(train_x, train_y_l3[:, :], epochs=20, verbose=1, batch_size = 100, validation_split=0.15)
 
   model3.save('l3_model%d.h5', class_num)
 
