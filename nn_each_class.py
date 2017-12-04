@@ -109,7 +109,7 @@ def main(argv):
   # train_x = np.reshape(train_x[:, :, :], (num_train, 224,224, 3))
   model.fit(train_x, train_y_l3[:, :], epochs=20, verbose=1, batch_size = 100, validation_split=0.15)
 
-  model3.save('l3_model%d.h5', class_num)
+  model.save('l3_model%d.h5', class_num)
 
 
 if __name__ == '__main__':
