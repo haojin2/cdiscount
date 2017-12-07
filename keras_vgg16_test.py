@@ -210,45 +210,46 @@ def main(argv):
   cl_acc = 0.
   # run forward prop for each of 5 level-1 class networks
   for i in range(5):
-    test_xs[i] = np.asarray(test_xs[i])
-    test_ys[i] = np.asarray(test_ys[i])
+    if len(test_ys[i]) != 0:
+      test_xs[i] = np.asarray(test_xs[i])
+      test_ys[i] = np.asarray(test_ys[i])
 
-    model_file = 'l3_model%d.h5' % (i)
-    model = load_model(model_file)
+      model_file = 'l3_model%d.h5' % (i)
+      model = load_model(model_file)
 
-    # predict probs and labels
-    predicted = model.predict(test_xs[i], verbose = 1, batch_size=1) # (N', out_size)
-    predicted_label = np.argmax(predicted, axis=1)  # (N', )
+      # predict probs and labels
+      predicted = model.predict(test_xs[i], verbose = 1, batch_size=1) # (N', out_size)
+      predicted_label = np.argmax(predicted, axis=1)  # (N', )
 
-    # prob value of the predicted label
-    predicted_prob = np.amax(predicted, axis = 1) # (N', )
+      # prob value of the predicted label
+      predicted_prob = np.amax(predicted, axis = 1) # (N', )
 
-    num_items = len(item_image_mappings[i])
-    print "runnning %d test items for lv1 class %d" % (num_items,l1s[i])
-    for j in range(num_items):
-      true_label = test_ys[i][j]
+      num_items = len(item_image_mappings[i])
+      print "runnning %d test items for lv1 class %d" % (num_items,l1s[i])
+      for j in range(num_items):
+        true_label = test_ys[i][j]
 
-      # predicted probabilities of true label
-      start = item_image_mappings[i][j][0]
-      end = item_image_mappings[i][j][1]
-      probs = predicted[start : end, true_label]
+        # predicted probabilities of true label
+        start = item_image_mappings[i][j][0]
+        end = item_image_mappings[i][j][1]
+        probs = predicted[start : end, true_label]
 
-      # predicted labels
-      labels = predicted_label[start:end]
+        # predicted labels
+        labels = predicted_label[start:end]
 
-      avg_probs = np.average(probs)
+        avg_probs = np.average(probs)
 
-      # majority vote
-      counts = np.bincount(labels)
-      label = np.argmax(counts)
+        # majority vote
+        counts = np.bincount(labels)
+        label = np.argmax(counts)
 
-      # if each image vote for a different class,  use the one with highest prob
-      if np.max(counts) == 1: 
-        label_idx = np.argmax(predicted_prob[start:end])
-        label = labels[label_idx]
-        # print "tied votes! label idx is {0} and predicted label is {1}".format(str(label_idx), str(label))
-      cl_acc += ((label==true_label) * 1./num_test_item)
-    del model
+        # if each image vote for a different class,  use the one with highest prob
+        if np.max(counts) == 1: 
+          label_idx = np.argmax(predicted_prob[start:end])
+          label = labels[label_idx]
+          # print "tied votes! label idx is {0} and predicted label is {1}".format(str(label_idx), str(label))
+        cl_acc += ((label==true_label) * 1./num_test_item)
+  del model
   print "classification accuracy is %f" % (cl_acc)
 
 
